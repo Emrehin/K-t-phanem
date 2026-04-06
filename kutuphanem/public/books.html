@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kütüphane Otomasyon Sistemi — Kitap Yönetimi">
+    <title>Kitaplar — Kütüphanem</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .page-intro {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 24px; gap: 16px; flex-wrap: wrap;
+        }
+        .page-intro .intro-text h3 {
+            font-size: 1.1rem; font-weight: 700; margin-bottom: 2px;
+        }
+        .page-intro .intro-text p {
+            color: var(--text-secondary); font-size: 0.84rem;
+        }
+        .toggle-form-btn {
+            background: var(--gradient-primary) !important;
+            color: #1a1205 !important;
+        }
+        .form-card { display: none; }
+        .form-card.open { display: block; animation: slideDown 0.3s ease; }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon">📚</div>
+                <div><h1>Kütüphanem</h1><span>Otomasyon Sistemi</span></div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="index.html"><span class="nav-icon">📊</span> Dashboard</a>
+                <a href="books.html"><span class="nav-icon">📖</span> Kitaplar</a>
+                <a href="students.html"><span class="nav-icon">👩‍🎓</span> Öğrenciler</a>
+                <a href="loans.html"><span class="nav-icon">🔄</span> Ödünç İşlemleri</a>
+                <a href="reports.html"><span class="nav-icon">📈</span> Raporlar</a>
+            </nav>
+            <div style="padding: 16px 14px; border-top: 1px solid rgba(255,255,255,0.08);">
+                <button class="btn btn-sm" style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6);" onclick="logout()">🚪 Çıkış Yap</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="page-header">
+                <button class="mobile-menu-btn">☰</button>
+                <h2>📖 Kitaplar</h2>
+                <div class="header-actions"></div>
+            </header>
+
+            <div class="page-body">
+                <!-- SAYFA GİRİŞ -->
+                <div class="page-intro">
+                    <div class="intro-text">
+                        <h3>Kitap Yönetimi</h3>
+                        <p>Kütüphanenizdeki kitapları ekleyin, düzenleyin ve yönetin</p>
+                    </div>
+                    <button class="btn btn-primary toggle-form-btn" onclick="toggleForm()">➕ Yeni Kitap Ekle</button>
+                </div>
+
+                <!-- KİTAP EKLEME FORMU (gizli başlar) -->
+                <div class="form-card" id="bookFormCard">
+                    <h3 id="formTitle">➕ Yeni Kitap Ekle</h3>
+                    <form id="bookForm" onsubmit="handleBookSubmit(event)">
+                        <input type="hidden" id="bookId">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="title">Kitap Adı *</label>
+                                <input type="text" id="title" placeholder="Kitap adını girin" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="author">Yazar *</label>
+                                <input type="text" id="author" placeholder="Yazar adını girin" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="isbn">ISBN</label>
+                                <input type="text" id="isbn" placeholder="978-xxx-xxx">
+                            </div>
+                            <div class="form-group">
+                                <label for="category">Kategori</label>
+                                <select id="category">
+                                    <option value="Genel">Genel</option>
+                                    <option value="Roman">Roman</option>
+                                    <option value="Bilim">Bilim</option>
+                                    <option value="Tarih">Tarih</option>
+                                    <option value="Felsefe">Felsefe</option>
+                                    <option value="Teknoloji">Teknoloji</option>
+                                    <option value="Sanat">Sanat</option>
+                                    <option value="Eğitim">Eğitim</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="quantity">Adet</label>
+                                <input type="number" id="quantity" min="1" value="1">
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" id="submitBtn">➕ Ekle</button>
+                            <button type="button" class="btn btn-secondary" onclick="resetForm()" id="cancelBtn">İptal</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- KİTAP LİSTESİ -->
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>📚 Kitap Listesi</h3>
+                        <div class="search-box">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" id="searchInput" placeholder="Kitap veya yazar ara..." oninput="handleSearch()">
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kitap Adı</th>
+                                <th>Yazar</th>
+                                <th>ISBN</th>
+                                <th>Kategori</th>
+                                <th>Stok</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="booksTableBody">
+                            <tr><td colspan="6" class="table-empty"><div class="empty-icon">📭</div><p>Henüz kitap eklenmemiş</p></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        function toggleForm() {
+            const card = document.getElementById('bookFormCard');
+            card.classList.toggle('open');
+        }
+    </script>
+    <script src="js/books.js"></script>
+</body>
+</html>

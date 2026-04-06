@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kütüphane Otomasyon Sistemi — Öğrenci Paneli">
+    <title>Öğrenci Paneli — Kütüphanem</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon">📚</div>
+                <div>
+                    <h1>Kütüphanem</h1>
+                    <span>Öğrenci Paneli</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#books" class="active" onclick="showSection('books')"><span class="nav-icon">📖</span> Kitaplar</a>
+                <a href="#myloans" onclick="showSection('myloans')"><span class="nav-icon">📋</span> Ödünç Kitaplarım</a>
+            </nav>
+            <div style="padding: 16px 12px; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.08);">
+                <div style="padding: 10px 16px; color: rgba(255,255,255,0.5); font-size: 0.82rem;">
+                    <div style="font-weight: 600; color: #f5f2ee;" id="studentName">—</div>
+                    <div id="studentInfo" style="margin-top: 2px;">—</div>
+                </div>
+                <button class="btn btn-secondary btn-sm" style="width: 100%; margin-top: 8px; background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6);" onclick="logout()">🚪 Çıkış Yap</button>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <header class="page-header">
+                <button class="mobile-menu-btn">☰</button>
+                <h2 id="pageTitle">📖 Kitap Kataloğu</h2>
+                <div class="header-actions"></div>
+            </header>
+
+            <div class="page-body">
+                <!-- KİTAPLAR BÖLÜMÜ -->
+                <div id="booksSection">
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h3>📚 Kütüphane Kitapları</h3>
+                            <div class="search-box">
+                                <span class="search-icon">🔍</span>
+                                <input type="text" id="searchInput" placeholder="Kitap veya yazar ara..." oninput="handleSearch()">
+                            </div>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Kitap Adı</th>
+                                    <th>Yazar</th>
+                                    <th>Kategori</th>
+                                    <th>ISBN</th>
+                                    <th>Stok Durumu</th>
+                                </tr>
+                            </thead>
+                            <tbody id="booksTableBody">
+                                <tr><td colspan="5" class="table-empty"><div class="empty-icon">📭</div><p>Kitaplar yükleniyor...</p></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ÖDÜNÇ KİTAPLARIM BÖLÜMÜ -->
+                <div id="myloansSection" style="display: none;">
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h3>📋 Ödünç Aldığım Kitaplar</h3>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Kitap Adı</th>
+                                    <th>Yazar</th>
+                                    <th>Ödünç Tarihi</th>
+                                    <th>İade Tarihi</th>
+                                    <th>Kalan Süre</th>
+                                    <th>Durum</th>
+                                </tr>
+                            </thead>
+                            <tbody id="myLoansBody">
+                                <tr><td colspan="6" class="table-empty"><div class="empty-icon">📭</div><p>Yükleniyor...</p></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/student-panel.js"></script>
+</body>
+</html>

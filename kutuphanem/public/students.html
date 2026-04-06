@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kütüphane Otomasyon Sistemi — Öğrenci Yönetimi">
+    <title>Öğrenciler — Kütüphanem</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .page-intro {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 24px; gap: 16px; flex-wrap: wrap;
+        }
+        .page-intro .intro-text h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 2px; }
+        .page-intro .intro-text p { color: var(--text-secondary); font-size: 0.84rem; }
+        .form-card { display: none; }
+        .form-card.open { display: block; animation: slideDown 0.3s ease; }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon">📚</div>
+                <div><h1>Kütüphanem</h1><span>Otomasyon Sistemi</span></div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="index.html"><span class="nav-icon">📊</span> Dashboard</a>
+                <a href="books.html"><span class="nav-icon">📖</span> Kitaplar</a>
+                <a href="students.html"><span class="nav-icon">👩‍🎓</span> Öğrenciler</a>
+                <a href="loans.html"><span class="nav-icon">🔄</span> Ödünç İşlemleri</a>
+                <a href="reports.html"><span class="nav-icon">📈</span> Raporlar</a>
+            </nav>
+            <div style="padding: 16px 14px; border-top: 1px solid rgba(255,255,255,0.08);">
+                <button class="btn btn-sm" style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6);" onclick="logout()">🚪 Çıkış Yap</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="page-header">
+                <button class="mobile-menu-btn">☰</button>
+                <h2>👩‍🎓 Öğrenciler</h2>
+                <div class="header-actions"></div>
+            </header>
+
+            <div class="page-body">
+                <div class="page-intro">
+                    <div class="intro-text">
+                        <h3>Öğrenci Yönetimi</h3>
+                        <p>Kayıtlı öğrencileri görüntüleyin ve yeni öğrenci ekleyin</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleForm()">➕ Yeni Öğrenci Ekle</button>
+                </div>
+
+                <!-- ÖĞRENCİ EKLEME FORMU -->
+                <div class="form-card" id="studentFormCard">
+                    <h3 id="formTitle">➕ Yeni Öğrenci Ekle</h3>
+                    <form id="studentForm" onsubmit="handleStudentSubmit(event)">
+                        <input type="hidden" id="studentId">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="name">İsim Soyisim *</label>
+                                <input type="text" id="name" placeholder="İsim soyisim" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="student_no">Öğrenci No *</label>
+                                <input type="text" id="student_no" placeholder="Öğrenci numarası" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Şifre</label>
+                                <input type="text" id="password" placeholder="Varsayılan: 1234" value="1234">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">E-posta</label>
+                                <input type="email" id="email" placeholder="ornek@mail.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="department">Bölüm</label>
+                                <input type="text" id="department" placeholder="Bölüm adı">
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" id="submitBtn">➕ Ekle</button>
+                            <button type="button" class="btn btn-secondary" onclick="resetForm()" id="cancelBtn">İptal</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- ÖĞRENCİ LİSTESİ -->
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>👥 Öğrenci Listesi</h3>
+                        <div class="search-box">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" id="searchInput" placeholder="Öğrenci ara..." oninput="handleSearch()">
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>İsim Soyisim</th>
+                                <th>Öğrenci No</th>
+                                <th>E-posta</th>
+                                <th>Bölüm</th>
+                                <th>Kayıt Tarihi</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody">
+                            <tr><td colspan="6" class="table-empty"><div class="empty-icon">📭</div><p>Henüz öğrenci eklenmemiş</p></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        function toggleForm() {
+            document.getElementById('studentFormCard').classList.toggle('open');
+        }
+    </script>
+    <script src="js/students.js"></script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kütüphane Otomasyon Sistemi — Raporlar">
+    <title>Raporlar — Kütüphanem</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .page-intro {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 24px; gap: 16px; flex-wrap: wrap;
+        }
+        .page-intro .intro-text h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 2px; }
+        .page-intro .intro-text p { color: var(--text-secondary); font-size: 0.84rem; }
+        .reports-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        .report-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        .report-card .report-title {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 1rem; font-weight: 700;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .report-card .report-body {
+            padding: 0;
+        }
+        .rank-list { list-style: none; }
+        .rank-item {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 24px;
+            border-bottom: 1px solid var(--border-color);
+            transition: background var(--transition-fast);
+        }
+        .rank-item:last-child { border-bottom: none; }
+        .rank-item:hover { background: rgba(200, 149, 108, 0.03); }
+        .rank-num {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 800;
+            background: rgba(200, 149, 108, 0.1);
+            color: var(--accent-primary);
+            flex-shrink: 0;
+        }
+        .rank-item:nth-child(1) .rank-num { background: var(--gradient-primary); color: #1a1205; }
+        .rank-item:nth-child(2) .rank-num { background: rgba(200, 149, 108, 0.2); }
+        .rank-item:nth-child(3) .rank-num { background: rgba(200, 149, 108, 0.15); }
+        .rank-info { flex: 1; }
+        .rank-name { font-weight: 600; font-size: 0.87rem; }
+        .rank-detail { font-size: 0.75rem; color: var(--text-muted); }
+        .rank-value {
+            font-weight: 800; font-size: 0.9rem;
+            color: var(--accent-primary);
+        }
+        .section-gap { margin-bottom: 24px; }
+        @media (max-width: 768px) {
+            .reports-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon">📚</div>
+                <div><h1>Kütüphanem</h1><span>Otomasyon Sistemi</span></div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="index.html"><span class="nav-icon">📊</span> Dashboard</a>
+                <a href="books.html"><span class="nav-icon">📖</span> Kitaplar</a>
+                <a href="students.html"><span class="nav-icon">👩‍🎓</span> Öğrenciler</a>
+                <a href="loans.html"><span class="nav-icon">🔄</span> Ödünç İşlemleri</a>
+                <a href="reports.html"><span class="nav-icon">📈</span> Raporlar</a>
+            </nav>
+            <div style="padding: 16px 14px; border-top: 1px solid rgba(255,255,255,0.08);">
+                <button class="btn btn-sm" style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6);" onclick="logout()">🚪 Çıkış Yap</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="page-header">
+                <button class="mobile-menu-btn">☰</button>
+                <h2>📈 Raporlar</h2>
+                <div class="header-actions"></div>
+            </header>
+
+            <div class="page-body">
+                <div class="page-intro">
+                    <div class="intro-text">
+                        <h3>Raporlar ve İstatistikler</h3>
+                        <p>Kütüphane kullanım analizi, gecikme raporları ve sıralamalar</p>
+                    </div>
+                </div>
+
+                <!-- GECİKMİŞ KİTAPLAR -->
+                <div class="table-container section-gap">
+                    <div class="table-header">
+                        <h3>🚨 Gecikmiş Kitaplar</h3>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Öğrenci</th>
+                                <th>Kitap</th>
+                                <th>Ödünç Tarihi</th>
+                                <th>İade Tarihi</th>
+                                <th>Gecikme</th>
+                            </tr>
+                        </thead>
+                        <tbody id="overdueBody">
+                            <tr><td colspan="5" class="table-empty"><div class="empty-icon">✅</div><p>Gecikmiş kitap bulunmuyor</p></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- SIRALAMALAR -->
+                <div class="reports-grid">
+                    <div class="report-card">
+                        <div class="report-title">📖 En Çok Okunan Kitaplar</div>
+                        <div class="report-body">
+                            <ul class="rank-list" id="topBooksList">
+                                <li class="rank-item" style="justify-content: center; color: var(--text-muted); padding: 32px;">Yükleniyor...</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="report-card">
+                        <div class="report-title">🏆 En Çok Okuyan Öğrenciler</div>
+                        <div class="report-body">
+                            <ul class="rank-list" id="topStudentsList">
+                                <li class="rank-item" style="justify-content: center; color: var(--text-muted); padding: 32px;">Yükleniyor...</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/reports.js"></script>
+</body>
+</html>

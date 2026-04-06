@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kütüphane Otomasyon Sistemi — Giriş">
+    <title>Giriş — Kütüphanem</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            display: flex; align-items: center; justify-content: center;
+            min-height: 100vh;
+            background: var(--bg-primary);
+            padding: 20px;
+        }
+
+        .login-container { width: 100%; max-width: 400px; }
+
+        .login-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            padding: 40px 32px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .login-logo { text-align: center; margin-bottom: 30px; }
+
+        .login-logo .logo-icon {
+            width: 60px; height: 60px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-lg);
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; margin-bottom: 14px;
+            box-shadow: 0 4px 14px rgba(139, 94, 60, 0.2);
+        }
+
+        .login-logo h1 {
+            font-size: 1.5rem; font-weight: 800;
+            color: var(--accent-primary);
+        }
+
+        .login-logo p {
+            color: var(--text-muted); font-size: 0.84rem; margin-top: 4px;
+        }
+
+        .role-tabs {
+            display: flex; margin-bottom: 22px;
+            background: var(--bg-input);
+            border-radius: var(--radius-sm);
+            padding: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .role-tab {
+            flex: 1; padding: 9px; text-align: center;
+            border: none; background: transparent;
+            color: var(--text-muted);
+            font-family: inherit; font-size: 0.86rem; font-weight: 600;
+            cursor: pointer; border-radius: 7px;
+            transition: all var(--transition-fast);
+        }
+
+        .role-tab.active {
+            background: var(--gradient-primary);
+            color: #fff;
+            box-shadow: 0 2px 10px rgba(139, 94, 60, 0.2);
+        }
+
+        .role-tab:hover:not(.active) {
+            color: var(--text-primary);
+            background: rgba(139, 94, 60, 0.05);
+        }
+
+        .login-form .form-group { margin-bottom: 14px; }
+
+        .login-form .form-group label {
+            font-size: 0.8rem; font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 5px; display: block;
+        }
+
+        .login-form .form-group input {
+            width: 100%; padding: 11px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: inherit; font-size: 0.88rem;
+            outline: none;
+            transition: all var(--transition-fast);
+        }
+
+        .login-form .form-group input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(139, 94, 60, 0.08);
+            background: #fff;
+        }
+
+        .login-btn {
+            width: 100%; padding: 12px;
+            background: var(--gradient-primary);
+            color: #fff; border: none;
+            border-radius: var(--radius-sm);
+            font-family: inherit; font-size: 0.92rem; font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            margin-top: 6px;
+            box-shadow: 0 2px 12px rgba(139, 94, 60, 0.2);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 18px rgba(139, 94, 60, 0.3);
+        }
+
+        .login-error {
+            background: rgba(181, 73, 58, 0.06);
+            border: 1px solid rgba(181, 73, 58, 0.15);
+            color: var(--accent-danger);
+            padding: 10px 14px; border-radius: var(--radius-sm);
+            font-size: 0.82rem; margin-bottom: 14px;
+            display: none;
+        }
+
+        .login-info {
+            text-align: center; margin-top: 18px;
+            color: var(--text-muted); font-size: 0.74rem; line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-logo">
+                <div class="logo-icon">📚</div>
+                <h1>Kütüphanem</h1>
+                <p>Otomasyon Sistemi</p>
+            </div>
+
+            <div class="role-tabs">
+                <button class="role-tab active" onclick="switchRole('admin')" id="adminTab">👨‍💼 Admin</button>
+                <button class="role-tab" onclick="switchRole('student')" id="studentTab">👩‍🎓 Öğrenci</button>
+            </div>
+
+            <div class="login-error" id="loginError"></div>
+
+            <form class="login-form" id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label id="usernameLabel" for="username">Kullanıcı Adı</label>
+                    <input type="text" id="username" placeholder="admin" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Şifre</label>
+                    <input type="password" id="password" placeholder="••••••" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="login-btn" id="loginBtn">🔐 Giriş Yap</button>
+            </form>
+
+            <div class="login-info">
+                <div id="infoText">Admin: admin / admin123</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentRole = 'admin';
+
+        function switchRole(role) {
+            currentRole = role;
+            document.getElementById('adminTab').classList.toggle('active', role === 'admin');
+            document.getElementById('studentTab').classList.toggle('active', role === 'student');
+            document.getElementById('loginError').style.display = 'none';
+
+            if (role === 'admin') {
+                document.getElementById('usernameLabel').textContent = 'Kullanıcı Adı';
+                document.getElementById('username').placeholder = 'admin';
+                document.getElementById('infoText').textContent = 'Admin: admin / admin123';
+            } else {
+                document.getElementById('usernameLabel').textContent = 'Öğrenci Numarası';
+                document.getElementById('username').placeholder = '2024001';
+                document.getElementById('infoText').textContent = 'Varsayılan şifre: 1234';
+            }
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const errorEl = document.getElementById('loginError');
+            errorEl.style.display = 'none';
+
+            const btn = document.getElementById('loginBtn');
+            btn.textContent = '⏳ Giriş yapılıyor...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: document.getElementById('username').value.trim(),
+                        password: document.getElementById('password').value,
+                        role: currentRole
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) throw new Error(data.error);
+
+                if (data.user.role === 'admin') {
+                    window.location.href = 'index.html';
+                } else {
+                    window.location.href = 'student-panel.html';
+                }
+            } catch (err) {
+                errorEl.textContent = err.message;
+                errorEl.style.display = 'block';
+                btn.textContent = '🔐 Giriş Yap';
+                btn.disabled = false;
+            }
+        }
+
+        fetch('/api/auth/me')
+            .then(r => r.json())
+            .then(user => {
+                if (user.role === 'admin') window.location.href = 'index.html';
+                else if (user.role === 'student') window.location.href = 'student-panel.html';
+            })
+            .catch(() => {});
+    </script>
+</body>
+</html>

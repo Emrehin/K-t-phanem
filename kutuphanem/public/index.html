@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kütüphane Otomasyon Sistemi — Dashboard">
+    <title>Dashboard — Kütüphanem</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .welcome-banner {
+            background: linear-gradient(135deg, rgba(139,94,60,0.06) 0%, rgba(90,122,94,0.04) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 30px 34px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -10%;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(139,94,60,0.05) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .welcome-banner h2 {
+            font-size: 1.4rem; font-weight: 800;
+            margin-bottom: 4px; letter-spacing: -0.5px;
+            color: var(--text-primary);
+        }
+        .welcome-banner p {
+            color: var(--text-secondary); font-size: 0.9rem;
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        .dashboard-grid .full-width {
+            grid-column: 1 / -1;
+        }
+        .quick-stat {
+            display: flex; align-items: center; gap: 16px;
+            padding: 20px 22px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            transition: all var(--transition-normal);
+            box-shadow: var(--shadow-sm);
+        }
+        .quick-stat:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--border-glow);
+        }
+        .quick-stat .qs-icon {
+            width: 56px; height: 56px;
+            border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; flex-shrink: 0;
+        }
+        .quick-stat .qs-icon.amber { background: rgba(139,94,60,0.08); }
+        .quick-stat .qs-icon.green { background: rgba(74,138,82,0.08); }
+        .quick-stat .qs-icon.honey { background: rgba(196,154,46,0.08); }
+        .quick-stat .qs-icon.rose { background: rgba(181,73,58,0.08); }
+        .quick-stat .qs-value {
+            font-size: 1.8rem; font-weight: 800; letter-spacing: -1px;
+            line-height: 1;
+        }
+        .quick-stat .qs-label {
+            font-size: 0.78rem; color: var(--text-secondary);
+            font-weight: 600; margin-top: 4px;
+        }
+        .quick-stat .qs-value.amber { color: var(--accent-primary); }
+        .quick-stat .qs-value.green { color: var(--accent-success); }
+        .quick-stat .qs-value.honey { color: var(--accent-warning); }
+        .quick-stat .qs-value.rose { color: var(--accent-danger); }
+
+        @media (max-width: 768px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon">📚</div>
+                <div><h1>Kütüphanem</h1><span>Otomasyon Sistemi</span></div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="index.html"><span class="nav-icon">📊</span> Dashboard</a>
+                <a href="books.html"><span class="nav-icon">📖</span> Kitaplar</a>
+                <a href="students.html"><span class="nav-icon">👩‍🎓</span> Öğrenciler</a>
+                <a href="loans.html"><span class="nav-icon">🔄</span> Ödünç İşlemleri</a>
+                <a href="reports.html"><span class="nav-icon">📈</span> Raporlar</a>
+            </nav>
+            <div style="padding: 16px 14px; border-top: 1px solid rgba(255,255,255,0.08);">
+                <button class="btn btn-sm" style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6);" onclick="logout()">🚪 Çıkış Yap</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="page-header">
+                <button class="mobile-menu-btn">☰</button>
+                <h2>📊 Dashboard</h2>
+                <div class="header-actions">
+                    <button class="btn btn-secondary btn-sm" onclick="loadDashboard()">🔄 Yenile</button>
+                </div>
+            </header>
+
+            <div class="page-body">
+                <!-- KARŞILAMA BANNERI -->
+                <div class="welcome-banner">
+                    <h2>Hoş geldiniz 👋</h2>
+                    <p>Kütüphane otomasyon sisteminize genel bakış</p>
+                </div>
+
+                <!-- HIZLI İSTATİSTİKLER -->
+                <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+                    <div class="quick-stat">
+                        <div class="qs-icon amber">📖</div>
+                        <div class="qs-data">
+                            <div class="qs-value amber" id="totalBooks">0</div>
+                            <div class="qs-label">Toplam Kitap</div>
+                        </div>
+                    </div>
+                    <div class="quick-stat">
+                        <div class="qs-icon green">👩‍🎓</div>
+                        <div class="qs-data">
+                            <div class="qs-value green" id="totalStudents">0</div>
+                            <div class="qs-label">Toplam Öğrenci</div>
+                        </div>
+                    </div>
+                    <div class="quick-stat">
+                        <div class="qs-icon honey">�</div>
+                        <div class="qs-data">
+                            <div class="qs-value honey" id="activeLoans">0</div>
+                            <div class="qs-label">Aktif Ödünç</div>
+                        </div>
+                    </div>
+                    <div class="quick-stat">
+                        <div class="qs-icon rose">⚠️</div>
+                        <div class="qs-data">
+                            <div class="qs-value rose" id="overdueLoans">0</div>
+                            <div class="qs-label">Gecikmiş</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UYARI ALANI -->
+                <div id="alertsArea"></div>
+
+                <!-- SON İŞLEMLER -->
+                <div class="dashboard-grid full-width" style="margin-top: 6px;">
+                    <div class="table-container" style="grid-column: 1 / -1;">
+                        <div class="table-header">
+                            <h3>🕐 Son Ödünç İşlemleri</h3>
+                        </div>
+                        <div class="activity-list" id="recentLoans">
+                            <div class="table-empty">
+                                <div class="empty-icon">📭</div>
+                                <p>Henüz ödünç işlemi yok</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        async function loadDashboard() {
+            try {
+                const stats = await fetchAPI('/api/reports/stats');
+                document.getElementById('totalBooks').textContent = stats.totalBooks;
+                document.getElementById('totalStudents').textContent = stats.totalStudents;
+                document.getElementById('activeLoans').textContent = stats.activeLoans;
+                document.getElementById('overdueLoans').textContent = stats.overdueLoans;
+
+                const alertsArea = document.getElementById('alertsArea');
+                alertsArea.innerHTML = '';
+                if (stats.overdueLoans > 0) {
+                    alertsArea.innerHTML = `
+                        <div class="alert-card danger">
+                            <span class="alert-icon">🚨</span>
+                            <span><strong>${stats.overdueLoans} gecikmiş kitap</strong> bulunuyor! Ödünç İşlemleri sayfasından kontrol edin.</span>
+                        </div>
+                    `;
+                }
+
+                const loans = await fetchAPI('/api/loans');
+                const recentLoans = document.getElementById('recentLoans');
+
+                if (loans.length === 0) {
+                    recentLoans.innerHTML = `<div class="table-empty"><div class="empty-icon">📭</div><p>Henüz ödünç işlemi yok</p></div>`;
+                    return;
+                }
+
+                recentLoans.innerHTML = loans.slice(0, 10).map(loan => {
+                    const isOverdue = loan.status === 'overdue';
+                    const isReturned = loan.status === 'returned';
+                    let icon = 'loan', emoji = '📤';
+                    if (isReturned) { icon = 'return'; emoji = '📥'; }
+                    if (isOverdue) { icon = 'overdue'; emoji = '⚠️'; }
+
+                    return `
+                        <div class="activity-item">
+                            <div class="activity-icon ${icon}">${emoji}</div>
+                            <div class="activity-text">
+                                <strong>${loan.student_name}</strong> — ${loan.book_title}
+                                <span class="status-badge ${loan.status}">${loan.status === 'active' ? 'Aktif' : loan.status === 'returned' ? 'İade Edildi' : 'Gecikmiş'}</span>
+                            </div>
+                            <div class="activity-time">${formatDate(loan.loan_date)}</div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                console.error('Dashboard yüklenirken hata:', err);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadDashboard);
+    </script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kütüphane Otomasyon Sistemi — Ödünç İşlemleri">
+    <title>Ödünç İşlemleri — Kütüphanem</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .page-intro {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 24px; gap: 16px; flex-wrap: wrap;
+        }
+        .page-intro .intro-text h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 2px; }
+        .page-intro .intro-text p { color: var(--text-secondary); font-size: 0.84rem; }
+        .section-gap { margin-bottom: 24px; }
+    </style>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon">📚</div>
+                <div><h1>Kütüphanem</h1><span>Otomasyon Sistemi</span></div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="index.html"><span class="nav-icon">📊</span> Dashboard</a>
+                <a href="books.html"><span class="nav-icon">📖</span> Kitaplar</a>
+                <a href="students.html"><span class="nav-icon">👩‍🎓</span> Öğrenciler</a>
+                <a href="loans.html"><span class="nav-icon">🔄</span> Ödünç İşlemleri</a>
+                <a href="reports.html"><span class="nav-icon">📈</span> Raporlar</a>
+            </nav>
+            <div style="padding: 16px 14px; border-top: 1px solid rgba(255,255,255,0.08);">
+                <button class="btn btn-sm" style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6);" onclick="logout()">🚪 Çıkış Yap</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="page-header">
+                <button class="mobile-menu-btn">☰</button>
+                <h2>🔄 Ödünç İşlemleri</h2>
+                <div class="header-actions">
+                    <button class="btn btn-secondary btn-sm" onclick="checkOverdue()">🔍 Gecikme Kontrolü</button>
+                </div>
+            </header>
+
+            <div class="page-body">
+                <div class="page-intro">
+                    <div class="intro-text">
+                        <h3>Ödünç Yönetimi</h3>
+                        <p>Kitap ödünç verme, iade alma ve gecikme takibi</p>
+                    </div>
+                </div>
+
+                <!-- ÖDÜNÇ VERME FORMU -->
+                <div class="form-card open">
+                    <h3>📤 Yeni Ödünç Ver</h3>
+                    <form id="loanForm" onsubmit="handleLoanSubmit(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="student_id">Öğrenci *</label>
+                                <select id="student_id" required>
+                                    <option value="">Öğrenci seçin...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="book_id">Kitap *</label>
+                                <select id="book_id" required>
+                                    <option value="">Kitap seçin...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="due_date">İade Tarihi</label>
+                                <input type="date" id="due_date">
+                                <small style="color: var(--text-muted); font-size: 0.72rem;">Boş bırakılırsa 14 gün sonra</small>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">📤 Ödünç Ver</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- AKTİF ÖDÜNÇLER -->
+                <div class="table-container section-gap">
+                    <div class="table-header">
+                        <h3>📋 Aktif Ödünçler</h3>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Öğrenci</th>
+                                <th>Kitap</th>
+                                <th>Ödünç Tarihi</th>
+                                <th>İade Tarihi</th>
+                                <th>Durum</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activeLoansBody">
+                            <tr><td colspan="6" class="table-empty"><div class="empty-icon">📭</div><p>Aktif ödünç yok</p></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- TÜM KAYITLAR -->
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>📚 Tüm Ödünç Kayıtları</h3>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Öğrenci</th>
+                                <th>Kitap</th>
+                                <th>Ödünç Tarihi</th>
+                                <th>İade Tarihi</th>
+                                <th>İade Edilme</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allLoansBody">
+                            <tr><td colspan="6" class="table-empty"><div class="empty-icon">📭</div><p>Henüz kayıt yok</p></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/loans.js"></script>
+</body>
+</html>
