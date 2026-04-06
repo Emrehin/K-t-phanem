@@ -1,1 +1,135 @@
-Kütüphanem - Kütüphane Kitap Takip ve Otomasyon Sistemi Kütüphanelerde kitap, öğrenci ve ödünç işlemlerinin düzenli, hızlı ve izlenebilir biçimde yönetilmesini sağlayan web tabanlı bir otomasyon sistemidir. Sistem, işlem kayıtlarını veritabanında tutar ve gecikmeleri otomatik olarak işaretler. Öğrenci ve yönetici kullanıcıları için kontrollü bir kullanım deneyimi sunar. Kullanılan TeknolojilerSunucu: Node.js, Express 5 Veritabanı: SQLite (better-sqlite3) Oturum Yönetimi: express-session Arayüz: HTML, CSS, JavaScript ÖzelliklerYönetici (Admin) İşlemleri:Kitap ekleme, güncelleme ve silme. Öğrenci kayıt işlemleri. Kitap ödünç verme ve iade alma. Gecikmiş kayıtları izleme ve istatistik raporlarını görüntüleme. Öğrenci İşlemleri:Sisteme giriş yapma ve kitap kataloğunu görüntüleme. Kitap adı, yazar veya kategoriye göre arama yapma. Kendi aktif ve gecikmiş ödünçlerini kalan süre ile birlikte listeleyebilme. Otomasyon:Belirlenen periyotlarda teslim tarihi geçmiş aktif kayıtları kontrol eder. Geciken işlemlerin durumunu 'overdue' olarak günceller. Sistem Mimarisi ve VeritabanıSistem katmanlı bir yapı ile tasarlanmıştır. Sunum katmanı HTML/CSS/JS dosyalarından oluşurken, iş mantığı ve istek yönlendirme katmanı Express sunucusunda yer alır. Veri modeli üç ana tablo üzerinde kuruludur: books, students ve loans. loans tablosu hem kitap hem öğrenci kaydına bağlıdır; bu sayede her ödünç işlemi ilişkilendirilerek saklanır. Stok tutarlılığını sağlamak amacıyla ödünç verme ve iade işlemleri veritabanında transaction mantığıyla ele alınır. Kurulum ve ÇalıştırmaNode.js çalışma ortamını kurun. Proje klasörünü açın ve bağımlılıkları package.json üzerinden yükleyin (npm install). library.db dosyasının proje kök dizininde bulunduğundan ve yazma iznine sahip olduğundan emin olun. Sunucuyu server.js dosyası ile başlatın (node server.js). İlk açılışta varsayılan admin kaydını kontrol edin. Gelecekteki İyileştirmelerParolaların hash'lenmesi ve güvenlik politikalarının eklenmesi. E-posta ile gecikme bildirimi gönderme. Kitap rezervasyon ve bekleme listesi özellikleri. Grafiksel panel ve daha ayrıntılı raporlar. Otomatik test çerçevesi ve CI sürecinin eklenmesi. PostgreSQL gibi daha ölçeklenebilir bir veritabanına geçiş. GeliştiricilerCaner Kutluk - 232511017 Emre Durak - 232511049 Furkan Günay - 232511025 Yazılım Mühendisliği Dersi Proje Raporu - 26 Mart 2026 
+# 📚 Kütüphanem — Kütüphane Otomasyon Sistemi
+
+Kitap takibi, öğrenci yönetimi ve ödünç/iade süreçlerini otomatize eden web tabanlı kütüphane yönetim sistemi.
+
+![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-5.x-000000?logo=express)
+![SQLite](https://img.shields.io/badge/SQLite-3-003B57?logo=sqlite&logoColor=white)
+![License](https://img.shields.io/badge/Lisans-ISC-blue)
+
+---
+
+## ✨ Özellikler
+
+- 📖 **Kitap Yönetimi** — Ekleme, düzenleme, silme ve arama (ISBN, yazar, başlık)
+- 👨‍🎓 **Öğrenci Yönetimi** — Kayıt, güncelleme ve bölüm bazlı takip
+- 📋 **Ödünç / İade** — Transaction ile stok bütünlüğü, otomatik son tarih (14 gün)
+- ⏰ **Otomasyon** — Gecikmiş iadeleri 60 sn'de bir otomatik tespit eder
+- 📊 **Raporlar** — En çok okunan kitaplar, en aktif öğrenciler, gecikme raporu
+- 🔐 **Rol Bazlı Erişim** — Admin paneli + öğrenci self-servis paneli
+
+---
+
+## 🚀 Kurulum
+
+```bash
+git clone https://github.com/kullanici/kutuphanem.git
+cd kutuphanem
+npm install
+```
+
+### Çalıştırma
+
+```bash
+# Geliştirme (hot-reload)
+npm run dev
+
+# Üretim
+npm start
+```
+
+Tarayıcıda `http://localhost:3000` adresini açın.
+
+### Varsayılan Giriş
+
+| Rol | Kullanıcı | Şifre |
+|---|---|---|
+| Admin | `admin` | `admin123` |
+| Öğrenci | `{öğrenci_no}` | `1234` |
+
+---
+
+## 🏗️ Teknolojiler
+
+| | Teknoloji |
+|---|---|
+| **Backend** | Node.js, Express 5 |
+| **Veritabanı** | SQLite (better-sqlite3, WAL mode) |
+| **Oturum** | express-session |
+| **Frontend** | Vanilla HTML / CSS / JS |
+
+---
+
+## 📁 Proje Yapısı
+
+```
+├── server.js          # Express API sunucusu (18 endpoint)
+├── database.js        # SQLite CRUD + transaction'lar
+├── automation.js      # Periyodik gecikme kontrolü
+├── library.db         # SQLite veritabanı
+└── public/
+    ├── login.html     # Giriş (admin / öğrenci)
+    ├── index.html     # Dashboard
+    ├── books.html     # Kitap yönetimi
+    ├── students.html  # Öğrenci yönetimi
+    ├── loans.html     # Ödünç işlemleri
+    ├── reports.html   # Raporlar
+    └── student-panel.html  # Öğrenci paneli
+```
+
+---
+
+## 🗄️ Veritabanı
+
+4 tablo: `books`, `students`, `admins`, `loans`
+
+- **Foreign key** ve **WAL mode** aktif
+- Ödünç/iade işlemleri **transaction** içinde çalışır
+- `loans.status`: `active` → `overdue` → `returned`
+
+---
+
+## 🔌 API Özeti
+
+| Endpoint | Metot | Yetki | Açıklama |
+|---|---|---|---|
+| `/api/auth/login` | POST | — | Giriş yap |
+| `/api/books` | GET | Auth | Kitap listesi |
+| `/api/books` | POST | Admin | Kitap ekle |
+| `/api/students` | GET/POST | Admin | Öğrenci CRUD |
+| `/api/loans` | POST | Admin | Ödünç ver |
+| `/api/loans/:id/return` | PUT | Admin | İade et |
+| `/api/student/my-loans` | GET | Öğrenci | Kendi ödünçleri |
+| `/api/reports/stats` | GET | Admin | İstatistikler |
+
+> Tüm yanıtlar JSON formatındadır. Toplam **18 endpoint** mevcuttur.
+
+---
+
+## 📸 Ekran Görüntüleri
+
+<details>
+<summary>Görselleri göster</summary>
+
+### Giriş Sayfası
+![Giriş](rapor/screenshots/login.png)
+
+### Dashboard
+![Dashboard](rapor/screenshots/dashboard.png)
+
+### Kitap Yönetimi
+![Kitaplar](rapor/screenshots/books.png)
+
+### Ödünç İşlemleri
+![Ödünç](rapor/screenshots/loans.png)
+
+### Raporlar
+![Raporlar](rapor/screenshots/reports.png)
+
+</details>
+
+---
+
+## 📄 Lisans
+
+ISC
